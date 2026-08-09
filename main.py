@@ -17,6 +17,7 @@ import tkinter as tk
 from tkinter import font as tkfont
 from PIL import Image, ImageTk
 
+
 # --------------------------------------------------------------------------
 # Config — tweak these to taste
 # --------------------------------------------------------------------------
@@ -27,8 +28,8 @@ TASKBAR_ALLOWANCE = 70           # extra bottom margin so we clear the taskbar
 
 # All of these are in MINUTES. Decimals are fine — e.g. 0.5 = 30 seconds,
 # handy for testing without waiting a full hour.
-DEFAULT_INTERVAL_MIN = 5 /60        # default reminder interval
-SNOOZE_MIN = 5 / 60                 # snooze duration
+DEFAULT_INTERVAL_MIN = 30        # default reminder interval
+SNOOZE_MIN = 10              # snooze duration
 FOLLOWUP_OPTION_1_MIN = 30       # first "remind me again in..." choice
 FOLLOWUP_OPTION_2_MIN = 60       # second "remind me again in..." choice
 
@@ -297,7 +298,35 @@ class FollowUpPopup(PopupBase):
         self.destroy()
         self.app.schedule_next(minutes)
 
+def show_startup_toast(root):
+    toast = tk.Toplevel(root)
+    toast.overrideredirect(True)
+    toast.attributes("-topmost", True)
 
+    width = 260
+    height = 70
+
+    screen_w = toast.winfo_screenwidth()
+    screen_h = toast.winfo_screenheight()
+
+    x = screen_w - width - 20
+    y = screen_h - height - 80
+
+    toast.geometry(f"{width}x{height}+{x}+{y}")
+    toast.configure(bg="#2E7D32")
+
+    label = tk.Label(
+        toast,
+        text="💧 Hydro Buddy is running!",
+        fg="white",
+        bg="#2E7D32",
+        font=("Segoe UI", 11, "bold")
+    )
+    label.pack(expand=True, fill="both")
+
+    # Automatically close after 3 seconds
+    toast.after(3000, toast.destroy)
+    
 # --------------------------------------------------------------------------
 # App controller
 # --------------------------------------------------------------------------
@@ -306,6 +335,8 @@ class HydroBuddyApp:
         self.root = tk.Tk()
         self.root.withdraw()  # no main window, just background scheduling
 
+        self.root.after(500, lambda: show_startup_toast(self.root))
+        
         if not os.path.exists(ASSET_PATH):
             raise FileNotFoundError(f"Character gif not found at: {ASSET_PATH}")
 
