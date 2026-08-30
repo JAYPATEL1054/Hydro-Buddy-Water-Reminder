@@ -48,10 +48,6 @@ Launch → Load & process GIF frames → Schedule first reminder
                           Reschedule accordingly
 ```
 
-## 📸 Screenshots
-
-*(Add these — see the Screenshots section below for exactly what to capture.)*
-
 ## 🚀 Getting Started
 
 1. Make sure you have Python 3.8+ installed.
